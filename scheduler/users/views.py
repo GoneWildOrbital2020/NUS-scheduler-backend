@@ -12,6 +12,7 @@ from .serializers import UserSerializer, UserSerializerWithToken
 def current_user(request):
     #Determine the current user by their token and return their data
     serializer = UserSerializer(request.user)
+    print(serializer)
     return Response(serializer.data)
 
 class UserList(APIView):
@@ -19,7 +20,9 @@ class UserList(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
+        print(request.data)
         serializer = UserSerializerWithToken(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
