@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -29,7 +29,7 @@ class AccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class UserCustom(AbstractBaseUser):
+class UserCustom(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name="email", max_length=100, unique=True)
     username = models.CharField(max_length=30, unique=True)
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
