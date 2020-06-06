@@ -3,11 +3,12 @@ import json
 from django.shortcuts import render
 from django.core import serializers
 from django.http import HttpResponse
-
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from .models import Year, Day, Month
 from events.models import Event
 
-
+@permission_classes([AllowAny,])
 def day_events(request, user_id, month, day):
     if request.method == 'GET':
         year_obj, _ = Year.objects.get_or_create(pk=1)
@@ -31,7 +32,7 @@ def day_events(request, user_id, month, day):
                 index=event['index'], defaults=event)
         return HttpResponse(status=200)
 
-
+@permission_classes([AllowAny,])
 def all_events(request, user_id):
     if request.method == 'GET':
         events_count = Event.objects.filter(day__month__year__pk=1).count()
