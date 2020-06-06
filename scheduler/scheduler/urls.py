@@ -18,6 +18,8 @@ from django.urls import include, path
 from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
+    path('events/', include('events.urls')),
+    path('calendars/', include('calendars.urls')),
     path('admin/', admin.site.urls),
     path('token-auth/', obtain_jwt_token),
     path('users/', include('users.urls')),
