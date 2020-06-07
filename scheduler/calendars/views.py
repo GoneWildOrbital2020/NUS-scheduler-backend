@@ -26,10 +26,10 @@ def day_events(request, username, month, day):
         body = json.loads(request.body)
         events = body['events']
         user_obj = UserCustom.objects.get(username=username)
-        year_obj, _ = user_obj.year_set.get(index=2020)
-        month_obj, _ = year_obj.month_set.get_or_create(
+        year_obj = user_obj.year_set.get(index=2020)
+        month_obj = year_obj.month_set.get(
             month_name=Month.get_month_code(month))
-        day_obj, _ = month_obj.day_set.get_or_create(index=day)
+        day_obj = month_obj.day_set.get(index=day)
         day_obj.event_set.all().delete()
 
         for event in events:
