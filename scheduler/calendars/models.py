@@ -1,11 +1,16 @@
 from django.db import models
+from users.models import UserCustom
 
 
 class Year(models.Model):
     index = models.IntegerField()
+    user = models.ForeignKey(UserCustom, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return str(self.index)
+
+    class Meta:
+        unique_together = ['index', 'user']
 
 
 class Month(models.Model):
@@ -52,6 +57,9 @@ class Month(models.Model):
     def __str__(self):
         return self.month_name
 
+    class Meta:
+        unique_together = ['month_name', 'year']
+
 
 class Day(models.Model):
     index = models.IntegerField()
@@ -59,3 +67,6 @@ class Day(models.Model):
 
     def __str__(self):
         return str(self.index)
+
+    class Meta:
+        unique_together = ['index', 'month']
