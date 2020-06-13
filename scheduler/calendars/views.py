@@ -12,8 +12,8 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from .models import Year, Day, Month
 from users.models import UserCustom
 from events.models import Event
-from upload.models import FileHolder, Module
-from upload.serializers import FileSerializer
+from upload.models import EventGroup
+from upload.serializers import FileSerializer, ImageSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -56,13 +56,27 @@ def all_events(request, username):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 @parser_classes([MultiPartParser, FormParser, ])
-def upload_file(request, code):
-    module_obj = Module.objects.get(code=code)
+def upload_file(request, name):
+    group_obj = EventGroup.objects.get(name=name)
     file = FileSerializer(data=request.data)
     if file.is_valid():
         instance = file.save()
-        instance.module = module_obj
+        instance.group = group_obj
         instance.save()
         return Response(file.data, status=status.HTTP_201_CREATED)
     else:
         return Response(file.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+@parser_classes([MultiPartParser, FormParser, ])
+def upload_image(request, name):
+    group_obj = EventGroup.objects.get(name=name)
+    img = ImageSerializer(data=request.data)
+    if img.is_valid():
+        instance = img.save()
+        instance.group = group_obj
+        instance.save()
+        return Response(img.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(img.errors, status=status.HTTP_400_BAD_REQUEST)

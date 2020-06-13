@@ -1,9 +1,12 @@
 from rest_framework import serializers
-from rest_framework_jwt.settings import api_settings
-from django.contrib.auth.models import User
-from .models import FileHolder, Module
+from .models import FileHolder, EventGroup, ImageHolder
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = FileHolder
-        fields = ['name', 'image', 'file']
+        fields = ['name', 'file']
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = ImageHolder
+        fields = ['name', 'image']
