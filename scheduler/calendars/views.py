@@ -3,11 +3,17 @@ import json
 from django.shortcuts import render
 from django.core import serializers
 from django.http import HttpResponse
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.parsers import FormParser, MultiPartParser
 from .models import Year, Day, Month
 from users.models import UserCustom
 from events.models import Event
+from upload.models import EventGroup
+from upload.serializers import FileSerializer, ImageSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -46,3 +52,31 @@ def all_events(request, username):
     serialized_events = json.dumps({"count": events_count})
 
     return HttpResponse(serialized_events, content_type='application/json')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+@parser_classes([MultiPartParser, FormParser, ])
+def upload_file(request, name):
+    group_obj = EventGroup.objects.get(name=name)
+    file = FileSerializer(data=request.data)
+    if file.is_valid():
+        instance = file.save()
+        instance.group = group_obj
+        instance.save()
+        return Response(file.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(file.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+@parser_classes([MultiPartParser, FormParser, ])
+def upload_image(request, name):
+    group_obj = EventGroup.objects.get(name=name)
+    img = ImageSerializer(data=request.data)
+    if img.is_valid():
+        instance = img.save()
+        instance.group = group_obj
+        instance.save()
+        return Response(img.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(img.errors, status=status.HTTP_400_BAD_REQUEST)

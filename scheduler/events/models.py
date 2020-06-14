@@ -1,5 +1,6 @@
 from django.db import models
 from calendars.models import Day
+from upload.models import EventGroup
 
 
 class Event(models.Model):
@@ -11,6 +12,7 @@ class Event(models.Model):
     location = models.TextField()
     color = models.TextField(default="#FFFFFF")
     day = models.ForeignKey(Day, on_delete=models.CASCADE, default=1)
+    group = models.ForeignKey(EventGroup, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title
