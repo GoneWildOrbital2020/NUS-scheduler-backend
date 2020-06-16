@@ -80,3 +80,19 @@ def upload_image(request, name):
         return Response(img.data, status=status.HTTP_201_CREATED)
     else:
         return Response(img.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def get_all_files(request, username, name):
+    user_obj = UserCustom.objects.get(username=username)
+    group_obj = user_obj.owner.get(name=name)
+    serialized_files = serializers.serialize('json', group_obj.files.all())
+    return HttpResponse(serialized_files, content_type='application/json')
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def get_all_images(request, username, name):
+    user_obj = UserCustom.objects.get(username=username)
+    group_obj = user_obj.owner.get(name=name)
+    serialized_files = serializers.serialize('json', group_obj.images.all())
+    return HttpResponse(serialized_files, content_type='application/json')
