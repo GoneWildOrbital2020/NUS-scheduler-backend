@@ -24,4 +24,5 @@ urlpatterns = [
     path('token-auth/', obtain_jwt_token),
     path('users/', include('users.urls')),
     path('upload/', include('upload.urls')),
+    path('event/', include('events.urls')),
 ]

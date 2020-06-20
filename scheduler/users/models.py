@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
         if not email:
@@ -29,10 +30,13 @@ class AccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class UserCustom(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(verbose_name="email", max_length=100, unique=True)
+    email = models.EmailField(verbose_name="email",
+                              max_length=100, unique=True)
     username = models.CharField(max_length=30, unique=True)
-    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+    date_joined = models.DateTimeField(
+        verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -46,10 +50,9 @@ class UserCustom(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
+
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
     def has_module_perms(self, app_label):
         return True
-
