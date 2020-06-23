@@ -50,7 +50,10 @@ class Month(models.Model):
     def get_month_length(self):
         return self.MONTH_LENGTH[self.month_name]
 
-    @staticmethod
+    def get_next_week(self, day):
+        return str((int(day) + 7) % self.MONTH_LENGTH[self.month_name])
+
+    @ staticmethod
     def get_month_code(index):
         return Month.MONTH_CHOICES[index][0]
 

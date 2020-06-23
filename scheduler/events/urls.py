@@ -1,3 +1,4 @@
 from django.urls import path
+from .views import nusmod
 
-urlpatterns = []
+urlpatterns = [path("nusmod/<str:username>", nusmod)]
