@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 def nusmod(request, username):
     user = UserCustom.objects.get(username=username)
     ics = request.data['ics']
-    events = ics.split("BEGIN:VEVENT\n")[1:]
+    events = ics.split("BEGIN:VEVENT\r\n")[1:]
     for event in events:
         Event.parse(event, user)
     return HttpResponse(status=200)

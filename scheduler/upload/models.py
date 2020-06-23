@@ -24,3 +24,12 @@ class ImageHolder(models.Model):
 
     def __str__(self):
         return self.name
+
+class Note(models.Model):
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    group = models.ForeignKey(
+        EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name="notes")
+
+    def __str__(self):
+        return self.title

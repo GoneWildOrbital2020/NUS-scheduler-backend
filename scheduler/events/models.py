@@ -30,23 +30,15 @@ class Event(models.Model):
 
     @staticmethod
     def parse(data, user):
-        splitted = data.split('\n')
+        splitted = data.split('\r\n')[:-1]
         data_dict = {}
         dates = []
-        desc = False
         for item in splitted:
-            if desc:
-                if item == "END:VEVENT":
-                    break
-                data_dict["DESCRIPTION"] = data_dict["DESCRIPTION"] + " " + item
+            [key, value] = item.split(':')
+            if key == "EXDATE":
+                dates.append(value[:8])
             else:
-                [key, value] = item.split(':')
-                if key == "EXDATE":
-                    dates.append(value[:8])
-                else:
-                    data_dict[key] = value
-                    if key == "DESCRIPTION":
-                        desc = True
+                data_dict[key] = value
         group, _ = user.event_group.get_or_create(
             name=data_dict["DESCRIPTION"].split(" ", 1)[0])
         events_count = Event.objects.filter(
@@ -54,6 +46,7 @@ class Event(models.Model):
         year = data_dict["DTSTART"][:4]
         month = data_dict["DTSTART"][4:6]
         day = data_dict["DTSTART"][6:8]
+        data_dict['DESCRIPTION'] = data_dict['DESCRIPTION'].replace("\\n", " ")
         if data_dict["SUMMARY"].split(" ")[1] == "Exam":
             year_obj, _ = user.year_set.get_or_create(index=2020)
             month_obj, _ = year_obj.month_set.get_or_create(
@@ -73,6 +66,7 @@ class Event(models.Model):
                 ev = Event.objects.create(index=events_count, title=data_dict["SUMMARY"], description=data_dict["DESCRIPTION"],
                                           start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location=data_dict["LOCATION"], day=day_obj, group=group)
                 events_count = events_count + 1
+                print(ev)
 
             next_week = month_obj.get_next_week(day)
             if len(next_week) == 1:
