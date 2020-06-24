@@ -27,8 +27,8 @@ class ImageHolder(models.Model):
 
 class Note(models.Model):
     identifier = models.IntegerField(null=True)
-    title = models.CharField(max_length=200)
-    text = models.TextField()
+    title = models.CharField(max_length=200, blank=True, null=True, unique=False)
+    text = models.TextField(blank=True, null=True, unique=False)
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name="notes")
 
