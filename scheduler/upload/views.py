@@ -49,14 +49,21 @@ def upload_image(request, username, name):
 def upload_note(request, username, name):
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
-    note = NoteSerializer(data=request.data)
-    if note.is_valid():
-        instance = note.save()
-        instance.group = group_obj
-        instance.save()
-        return Response(note.data, status=status.HTTP_201_CREATED)
+    if group_obj.notes.filter(identifier=request.data['identifier']).exists():
+        curr_note = group_obj.notes.get(identifier=request.data['identifier'])
+        curr_note.title = request.data['title']
+        curr_note.text = request.data['text']
+        curr_note.save()
+        return Response(status=status.HTTP_201_CREATED)
     else:
-        return Response(note.errors, status=status.HTTP_400_BAD_REQUEST)
+        note = NoteSerializer(data=request.data)
+        if note.is_valid():
+            instance = note.save()
+            instance.group = group_obj
+            instance.save()
+            return Response(note.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(note.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

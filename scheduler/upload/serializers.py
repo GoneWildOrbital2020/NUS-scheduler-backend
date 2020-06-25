@@ -14,4 +14,4 @@ class ImageSerializer(serializers.ModelSerializer):
 class NoteSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Note
-        fields = ['title', 'text']
+        fields = ['identifier', 'title', 'text']

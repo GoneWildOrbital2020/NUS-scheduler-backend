@@ -19,7 +19,7 @@ class Event(models.Model):
     start = models.TextField()
     end = models.TextField()
     location = models.TextField()
-    color = models.TextField(default="#FFFFFF")
+    color = models.TextField(default="#C95D63")
     day = models.ForeignKey(
         Day, on_delete=models.CASCADE,  null=True, blank=True)
     group = models.ForeignKey(
