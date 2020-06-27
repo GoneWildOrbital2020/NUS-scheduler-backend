@@ -12,6 +12,12 @@ class EventGroup(models.Model):
         return self.name
 
 
+class RepeatedEvent(models.Model):
+    name = models.CharField(max_length=200)
+    group = models.ForeignKey(
+        EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='repeated')
+
+
 class Event(models.Model):
     index = models.IntegerField()
     title = models.CharField(max_length=30)
@@ -24,6 +30,8 @@ class Event(models.Model):
         Day, on_delete=models.CASCADE,  null=True, blank=True)
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True,)
+    repeated_event = models.ForeignKey(
+        RepeatedEvent, on_delete=models.CASCADE, null=True, blank=True,)
 
     def __str__(self):
         return self.title
@@ -40,7 +48,9 @@ class Event(models.Model):
             else:
                 data_dict[key] = value
         group, _ = user.event_group.get_or_create(
-            name=data_dict["DESCRIPTION"].split(" ", 1)[0])
+            name=data_dict["SUMMARY"].split(" ", 1)[0])
+        repeated_event, _ = group.repeated.get_or_create(
+            name=data_dict["SUMMARY"])
         events_count = Event.objects.filter(
             day__month__year__index=2020, day__month__year__user=user).count() + 1
         year = data_dict["DTSTART"][:4]
@@ -62,11 +72,10 @@ class Event(models.Model):
             month_obj, _ = year_obj.month_set.get_or_create(
                 month_name=Month.get_month_code(int(month)-1))
             day_obj, _ = month_obj.day_set.get_or_create(index=int(day))
-            if (year + month + day) in dates:
-                ev = Event.objects.create(index=events_count, title=data_dict["SUMMARY"], description=data_dict["DESCRIPTION"],
-                                          start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location=data_dict["LOCATION"], day=day_obj, group=group)
+            if (year + month + day) not in dates:
+                Event.objects.create(index=events_count, title=data_dict["SUMMARY"], description=data_dict["DESCRIPTION"],
+                                     start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location=data_dict["LOCATION"], day=day_obj, group=group, repeated_event=repeated_event)
                 events_count = events_count + 1
-                print(ev)
 
             next_week = month_obj.get_next_week(day)
             if len(next_week) == 1:
