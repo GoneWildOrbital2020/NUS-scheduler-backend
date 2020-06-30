@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from events.models import EventGroup
 
 
@@ -11,6 +12,7 @@ class FileHolder(models.Model):
     file = models.FileField(blank=True, null=True, upload_to=upload_path)
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='files')
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -21,6 +23,7 @@ class ImageHolder(models.Model):
     image = models.ImageField(blank=True, null=True, upload_to=upload_path)
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='images')
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
