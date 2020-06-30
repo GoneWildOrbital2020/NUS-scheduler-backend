@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+def upload_path(instance, filename):
+    return '/'.join([str(instance.username), filename])
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -42,6 +44,7 @@ class UserCustom(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    avatar = models.ImageField(blank=True, null=True, upload_to=upload_path)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
