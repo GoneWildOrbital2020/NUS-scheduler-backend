@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import CreateUserAPIView, login, testAuth
+from .views import CreateUserAPIView, login, changeUserCredentials
 
 urlpatterns = [
     path('create/', CreateUserAPIView.as_view()),
     path('login/', login),
-    path('testauth/', testAuth),
+    path('update/', changeUserCredentials),
 ]

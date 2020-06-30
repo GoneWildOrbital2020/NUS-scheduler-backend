@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserSerializer
@@ -12,11 +13,28 @@ from scheduler.settings import SECRET_KEY
 import jwt
 from rest_framework_jwt.utils import jwt_payload_handler
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def testAuth(request):
-    print("authorized")
-    return Response(request.data)
+@parser_classes([MultiPartParser, FormParser, ])
+def changeUserCredentials(request):
+    email = request.data['email']
+    username = request.data['username']
+    password = request.data['password']
+    avatar = request.data['avatar']
+    print(avatar)
+    print(username)
+    print(email)
+    print(password)
+    user = UserCustom.objects.get(email=email)
+    if avatar != '':
+        user.avatar = avatar
+        print('here')
+    if password != '':
+        user.password = password
+    user.username = username
+    user.save()
+    return Response(status=status.HTTP_200_OK) 
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny,])
@@ -30,8 +48,10 @@ def login(request):
                 payload = jwt_payload_handler(user)
                 token = jwt.encode(payload, SECRET_KEY)
                 user_details = {}
+                user_details['email'] = email
                 user_details['username'] = user.username
                 user_details['token'] = token
+                user_details['avatar'] = user.avatar.url
                 return Response(user_details, status=status.HTTP_201_CREATED)
             
             except Exception as e:
