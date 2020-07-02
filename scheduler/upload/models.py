@@ -8,6 +8,7 @@ def upload_path(instance, filename):
 
 
 class FileHolder(models.Model):
+    identifier = models.IntegerField(null=True)
     name = models.CharField(max_length=200)
     file = models.FileField(blank=True, null=True, upload_to=upload_path)
     group = models.ForeignKey(
@@ -19,6 +20,7 @@ class FileHolder(models.Model):
 
 
 class ImageHolder(models.Model):
+    identifier = models.IntegerField(null=True)
     name = models.CharField(max_length=200)
     image = models.ImageField(blank=True, null=True, upload_to=upload_path)
     group = models.ForeignKey(

@@ -154,7 +154,7 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'scheduler.utils.my_jwt_response_handler',
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=14400),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }
 
