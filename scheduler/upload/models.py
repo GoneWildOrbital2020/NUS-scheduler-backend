@@ -8,22 +8,30 @@ def upload_path(instance, filename):
 
 
 class FileHolder(models.Model):
+    identifier = models.IntegerField(null=True)
     name = models.CharField(max_length=200)
     file = models.FileField(blank=True, null=True, upload_to=upload_path)
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='files')
     created_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ['identifier', 'group']
+
     def __str__(self):
         return self.name
 
 
 class ImageHolder(models.Model):
+    identifier = models.IntegerField(null=True)
     name = models.CharField(max_length=200)
     image = models.ImageField(blank=True, null=True, upload_to=upload_path)
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='images')
     created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['identifier', 'group']
 
     def __str__(self):
         return self.name

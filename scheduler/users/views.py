@@ -21,19 +21,17 @@ def changeUserCredentials(request):
     username = request.data['username']
     password = request.data['password']
     avatar = request.data['avatar']
-    print(avatar)
-    print(username)
-    print(email)
-    print(password)
     user = UserCustom.objects.get(email=email)
     if avatar != '':
         user.avatar = avatar
-        print('here')
     if password != '':
         user.password = password
     user.username = username
     user.save()
-    return Response(status=status.HTTP_200_OK) 
+    response = {}
+    response['username'] = username
+    response['avatar'] = user.avatar.url
+    return Response(response, status=status.HTTP_200_OK) 
 
 
 @api_view(['POST'])

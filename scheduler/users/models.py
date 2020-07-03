@@ -45,6 +45,8 @@ class UserCustom(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     avatar = models.ImageField(blank=True, null=True, upload_to=upload_path)
+    total_notes = models.IntegerField(default=0)
+    total_files = models.IntegerField(default=0)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
