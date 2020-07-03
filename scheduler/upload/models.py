@@ -15,6 +15,9 @@ class FileHolder(models.Model):
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='files')
     created_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ['identifier', 'group']
+
     def __str__(self):
         return self.name
 
@@ -26,6 +29,9 @@ class ImageHolder(models.Model):
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='images')
     created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['identifier', 'group']
 
     def __str__(self):
         return self.name
