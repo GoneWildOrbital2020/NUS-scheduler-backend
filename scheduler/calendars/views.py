@@ -57,3 +57,10 @@ def check_leap(request, year):
     response = {}
     response['leap'] = Year.check_leap(year)
     return Response(response, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def get_year(request, username):
+    user_obj = UserCustom.objects.get(username=username)
+    serialized_years = serializers.serialize('json', user_obj.year_set.all())
+    return HttpResponse(serialized_years, content_type='application/json')
