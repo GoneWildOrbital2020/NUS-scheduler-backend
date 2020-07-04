@@ -49,7 +49,10 @@ def login(request):
                 user_details['email'] = email
                 user_details['username'] = user.username
                 user_details['token'] = token
-                user_details['avatar'] = user.avatar.url
+                if user.avatar == '':
+                    user_details['avatar'] = ''
+                else:
+                    user_details['avatar'] = user.avatar.url
                 return Response(user_details, status=status.HTTP_201_CREATED)
             
             except Exception as e:
