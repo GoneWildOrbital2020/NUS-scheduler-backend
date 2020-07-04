@@ -16,10 +16,10 @@ from events.models import Event
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated, ])
-def day_events(request, username, month, day):
+def day_events(request, username, year, month, day):
     if request.method == 'GET':
         user_obj = UserCustom.objects.get(username=username)
-        year_obj, _ = user_obj.year_set.get_or_create(index=2020)
+        year_obj, _ = user_obj.year_set.get_or_create(index=year, is_leap=Year.check_leap(year))
         month_obj, _ = year_obj.month_set.get_or_create(
             month_name=Month.get_month_code(month))
         day_obj, _ = month_obj.day_set.get_or_create(index=day)
@@ -30,7 +30,7 @@ def day_events(request, username, month, day):
         body = json.loads(request.body)
         events = body['events']
         user_obj = UserCustom.objects.get(username=username)
-        year_obj = user_obj.year_set.get(index=2020)
+        year_obj = user_obj.year_set.get(index=year)
         month_obj = year_obj.month_set.get(
             month_name=Month.get_month_code(month))
         day_obj = month_obj.day_set.get(index=day)
@@ -44,9 +44,16 @@ def day_events(request, username, month, day):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def all_events(request, username):
+def all_events(request, username, year):
     events_count = Event.objects.filter(
-        day__month__year__index=2020, day__month__year__user__username=username).count()
+        day__month__year__index=year, day__month__year__user__username=username).count()
     serialized_events = json.dumps({"count": events_count})
 
     return HttpResponse(serialized_events, content_type='application/json')
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def check_leap(request, year):
+    response = {}
+    response['leap'] = Year.check_leap(year)
+    return Response(response, status=status.HTTP_200_OK)
