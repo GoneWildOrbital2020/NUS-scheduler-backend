@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'scheduler.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'usersdb',
+        'NAME': 'orbital',
         'USER': 'audrey',
         'PASSWORD': 'audrey',
         'HOST': 'localhost',
