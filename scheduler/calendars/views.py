@@ -64,3 +64,19 @@ def get_year(request, username):
     user_obj = UserCustom.objects.get(username=username)
     serialized_years = serializers.serialize('json', user_obj.year_set.all())
     return HttpResponse(serialized_years, content_type='application/json')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+def add_year(request, username, year):
+    user_obj = UserCustom.objects.get(username=username)
+    year = Year(index=year, user=user_obj, is_leap=Year.check_leap(year))
+    year.save()
+    return Response(status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+def delete_year(request, username, year):
+    user_obj = UserCustom.objects.get(username=username)
+    year = user_obj.year_set.get(index=year)
+    year.delete()
+    return Response(status=status.HTTP_200_OK)
