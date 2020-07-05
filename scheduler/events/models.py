@@ -11,6 +11,9 @@ class EventGroup(models.Model):
     def __str__(self):
         return self.name
 
+    class meta():
+        unique_together = ['name', 'user']
+
 
 class RepeatedEvent(models.Model):
     name = models.CharField(max_length=200)
@@ -25,7 +28,7 @@ class Event(models.Model):
     start = models.TextField()
     end = models.TextField()
     location = models.TextField()
-    color = models.TextField(default="#C95D63")
+    color = models.TextField(default="#6B7F82")
     day = models.ForeignKey(
         Day, on_delete=models.CASCADE,  null=True, blank=True)
     group = models.ForeignKey(
@@ -50,7 +53,7 @@ class Event(models.Model):
         group, _ = user.event_group.get_or_create(
             name=data_dict["SUMMARY"].split(" ", 1)[0])
         repeated_event, _ = group.repeated.get_or_create(
-            name=data_dict["SUMMARY"])
+            name=data_dict["SUMMARY"], group=group)
         events_count = Event.objects.filter(
             day__month__year__index=2020, day__month__year__user=user).count() + 1
         year = data_dict["DTSTART"][:4]
@@ -63,7 +66,7 @@ class Event(models.Model):
                 month_name=Month.get_month_code(int(month)-1))
             day_obj, _ = month_obj.day_set.get_or_create(index=int(day))
             Event.objects.create(index=events_count, title=data_dict["SUMMARY"], description=data_dict["DESCRIPTION"],
-                                 start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location="Exam Hall", day=day_obj, group=group)
+                                 start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location="Exam Hall", day=day_obj, group=group, repeated_event=repeated_event)
             return
         count = 0
         rules = data_dict["RRULE"].split(';')
