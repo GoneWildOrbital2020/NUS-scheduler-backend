@@ -84,9 +84,15 @@ class Month(models.Model):
 
     def get_next_week(self, day):
         if self.year.is_leap:
-            return str((int(day) + 7) % self.MONTH_LENGTH_LEAP[self.month_name])
+            nex = (int(day) + 7) % self.MONTH_LENGTH_LEAP[self.month_name]
+            if nex == 0:
+                nex = self.MONTH_LENGTH_LEAP[self.month_name]
+            return str(nex)
         else:
-            return str((int(day) + 7) % self.MONTH_LENGTH[self.month_name])
+            nex = (int(day) + 7) % self.MONTH_LENGTH[self.month_name]
+            if nex == 0:
+                nex = self.MONTH_LENGTH[self.month_name]
+            return str(nex)
 
     @ staticmethod
     def get_month_code(index):
