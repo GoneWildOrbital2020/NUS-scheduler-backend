@@ -54,14 +54,14 @@ class Event(models.Model):
             name=data_dict["SUMMARY"].split(" ", 1)[0])
         repeated_event, _ = group.repeated.get_or_create(
             name=data_dict["SUMMARY"], group=group)
-        events_count = Event.objects.filter(
-            day__month__year__index=2020, day__month__year__user=user).count() + 1
         year = data_dict["DTSTART"][:4]
+        events_count = Event.objects.filter(
+            day__month__year__index=year, day__month__year__user=user).count() + 1
         month = data_dict["DTSTART"][4:6]
         day = data_dict["DTSTART"][6:8]
         data_dict['DESCRIPTION'] = data_dict['DESCRIPTION'].replace("\\n", " ")
         if data_dict["SUMMARY"].split(" ")[1] == "Exam":
-            year_obj, _ = user.year_set.get_or_create(index=2020)
+            year_obj, _ = user.year_set.get_or_create(index=year)
             month_obj, _ = year_obj.month_set.get_or_create(
                 month_name=Month.get_month_code(int(month)-1))
             day_obj, _ = month_obj.day_set.get_or_create(index=int(day))
@@ -71,7 +71,7 @@ class Event(models.Model):
         count = 0
         rules = data_dict["RRULE"].split(';')
         while(count < int(rules[1][6:])):
-            year_obj, _ = user.year_set.get_or_create(index=2020)
+            year_obj, _ = user.year_set.get_or_create(index=year)
             month_obj, _ = year_obj.month_set.get_or_create(
                 month_name=Month.get_month_code(int(month)-1))
             day_obj, _ = month_obj.day_set.get_or_create(index=int(day))

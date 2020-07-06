@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from users.models import UserCustom
-from events.models import Month
+from calendars.models import Month, Year
 from .models import Event, RepeatedEvent, EventGroup
 from .serializers import EventByGroupSerializer, EventSerializer
 from rest_framework.decorators import api_view, permission_classes
@@ -61,7 +61,8 @@ def repeated_event(request, username, name, rep_id):
             username=username).event_group.get(
                 name=name).repeated.all().get(pk=rep_id)
         year_obj, _ = UserCustom.objects.get(
-            username=username).year_set.get_or_create(index=2020)
+            username=username).year_set.get_or_create(
+                index=body['year'], is_leap=Year.check_leap(body['year']))
         month_obj, _ = year_obj.month_set.get_or_create(
             month_name=Month.get_month_code(body['month']))
         day_obj, _ = month_obj.day_set.get_or_create(index=body['day'])
