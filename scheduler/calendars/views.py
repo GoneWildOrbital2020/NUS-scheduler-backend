@@ -12,6 +12,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from .models import Year, Day, Month
 from users.models import UserCustom
 from events.models import Event
+from .serializers import MonthSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -40,6 +41,19 @@ def day_events(request, username, month, day):
             event['day'] = day_obj
             Event.objects.create(**event)
         return HttpResponse(status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def month_events(request, username, month):
+    if request.method == 'GET':
+        user_obj = UserCustom.objects.get(username=username)
+        year_obj, _ = user_obj.year_set.get_or_create(index=2020)
+        month_obj, _ = year_obj.month_set.get_or_create(
+            month_name=Month.get_month_code(month))
+        serializer = MonthSerializer(
+            Event.objects.filter(day__month=month_obj), many=True)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
