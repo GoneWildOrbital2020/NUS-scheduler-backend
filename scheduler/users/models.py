@@ -1,3 +1,5 @@
+import datetime
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
@@ -47,6 +49,7 @@ class UserCustom(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(blank=True, null=True, upload_to=upload_path)
     total_notes = models.IntegerField(default=0)
     total_files = models.IntegerField(default=0)
+    logout_time = models.DateTimeField(blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -61,3 +64,7 @@ class UserCustom(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+    @staticmethod
+    def set_expired():
+        return timezone.now() + datetime.timedelta(seconds=14400)
