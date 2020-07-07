@@ -45,10 +45,13 @@ def login(request):
             try:
                 payload = jwt_payload_handler(user)
                 token = jwt.encode(payload, SECRET_KEY)
+                user.logout_time = UserCustom.set_expired()
+                user.save()
                 user_details = {}
                 user_details['email'] = email
                 user_details['username'] = user.username
                 user_details['token'] = token
+                user_details['logout_time'] = user.logout_time
                 if user.avatar == '':
                     user_details['avatar'] = ''
                 else:
