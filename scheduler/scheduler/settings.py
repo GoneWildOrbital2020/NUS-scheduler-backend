@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'upload.apps.UploadConfig',
+    'tasks.apps.TasksConfig'
 ]
 
 MIDDLEWARE = [

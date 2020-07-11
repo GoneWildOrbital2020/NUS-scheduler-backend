@@ -3,10 +3,16 @@ from .models import EventGroup, Event, RepeatedEvent
 
 
 class EventSerializer(serializers.ModelSerializer):
+    day = serializers.IntegerField(read_only=True, source="day.index")
+    month = serializers.CharField(
+        read_only=True, source="day.month.month_name")
+    year = serializers.IntegerField(
+        read_only=True, source="day.month.year.index")
 
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = ('index', 'title', 'description',
+                  'start', 'end', 'location', 'color', 'day', 'month', 'year')
         depth = 3
 
 
