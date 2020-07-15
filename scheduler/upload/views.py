@@ -16,7 +16,8 @@ from .serializers import FileSerializer, ImageSerializer, NoteSerializer
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 @parser_classes([MultiPartParser, FormParser, ])
-def upload_file(request, username, name):
+def upload_file(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     file = FileSerializer(data=request.data)
@@ -35,7 +36,8 @@ def upload_file(request, username, name):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 @parser_classes([MultiPartParser, FormParser, ])
-def upload_image(request, username, name):
+def upload_image(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     img = ImageSerializer(data=request.data)
@@ -52,7 +54,8 @@ def upload_image(request, username, name):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
-def upload_note(request, username, name):
+def upload_note(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     total = request.data['total'] + 1
@@ -77,7 +80,8 @@ def upload_note(request, username, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def get_all_files(request, username, name):
+def get_all_files(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     serialized_files = serializers.serialize('json', group_obj.files.all())
@@ -86,7 +90,8 @@ def get_all_files(request, username, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def get_all_images(request, username, name):
+def get_all_images(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     serialized_files = serializers.serialize('json', group_obj.images.all())
@@ -94,7 +99,8 @@ def get_all_images(request, username, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def get_all_notes(request, username, name):
+def get_all_notes(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     serialized_files = serializers.serialize('json', group_obj.notes.all())
@@ -102,7 +108,8 @@ def get_all_notes(request, username, name):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
-def delete_notes(request, username, name):
+def delete_notes(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     note = group_obj.notes.get(identifier=request.data['identifier'])
@@ -111,7 +118,8 @@ def delete_notes(request, username, name):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
-def delete_files(request, username, name):
+def delete_files(request, name):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     group_obj = user_obj.event_group.get(name=name)
     if group_obj.files.filter(identifier=request.data['identifier']).exists():
@@ -124,7 +132,8 @@ def delete_files(request, username, name):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def get_total_notes(request, username):
+def get_total_notes(request):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     response = {}
     response['total'] = user_obj.total_notes
@@ -132,7 +141,8 @@ def get_total_notes(request, username):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def get_total_files(request, username):
+def get_total_files(request):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     response = {}
     response['total'] = user_obj.total_files

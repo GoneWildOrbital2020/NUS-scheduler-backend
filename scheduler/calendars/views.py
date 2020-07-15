@@ -1,4 +1,6 @@
 import json
+import jwt
+from scheduler.settings import SECRET_KEY
 from datetime import datetime
 from django.shortcuts import render
 from django.core import serializers
@@ -17,7 +19,8 @@ from .serializers import MonthSerializer
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated, ])
-def day_events(request, username, year, month, day):
+def day_events(request, year, month, day):
+    username = request.user.username
     if request.method == 'GET':
         user_obj = UserCustom.objects.get(username=username)
         year_obj, _ = user_obj.year_set.get_or_create(
@@ -63,7 +66,8 @@ def day_events(request, username, year, month, day):
 
 @ api_view(['GET'])
 @ permission_classes([IsAuthenticated, ])
-def month_events(request, username, year, month):
+def month_events(request, year, month):
+    username = request.user.username
     if request.method == 'GET':
         user_obj = UserCustom.objects.get(username=username)
         year_obj, _ = user_obj.year_set.get_or_create(
@@ -72,13 +76,13 @@ def month_events(request, username, year, month):
             month_name=Month.get_month_code(month))
         serializer = MonthSerializer(
             Event.objects.filter(day__month=month_obj), many=True)
-        print(serializer.data)
         return Response(serializer.data)
 
 
 @ api_view(['GET'])
 @ permission_classes([IsAuthenticated, ])
-def all_events(request, username, year):
+def all_events(request, year):
+    username = request.user.username
     events_count = Event.objects.filter(
         day__month__year__user__username=username).count()
     serialized_events = json.dumps({"count": events_count})
@@ -96,7 +100,8 @@ def check_leap(request, year):
 
 @ api_view(['GET'])
 @ permission_classes([IsAuthenticated, ])
-def get_year(request, username):
+def get_year(request):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     serialized_years = serializers.serialize('json', user_obj.year_set.all())
     return HttpResponse(serialized_years, content_type='application/json')
@@ -104,7 +109,8 @@ def get_year(request, username):
 
 @ api_view(['POST'])
 @ permission_classes([IsAuthenticated, ])
-def add_year(request, username, year):
+def add_year(request, year):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     year = Year(index=year, user=user_obj, is_leap=Year.check_leap(year))
     year.save()
@@ -113,7 +119,8 @@ def add_year(request, username, year):
 
 @ api_view(['POST'])
 @ permission_classes([IsAuthenticated, ])
-def delete_year(request, username, year):
+def delete_year(request, year):
+    username = request.user.username
     user_obj = UserCustom.objects.get(username=username)
     year = user_obj.year_set.get(index=year)
     year.delete()

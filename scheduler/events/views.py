@@ -16,7 +16,8 @@ from django.forms.models import model_to_dict
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
-def nusmod(request, username):
+def nusmod(request):
+    username = request.user.username
     user = UserCustom.objects.get(username=username)
     ics = request.data['ics']
     events = ics.split("BEGIN:VEVENT\r\n")[1:]
@@ -27,7 +28,8 @@ def nusmod(request, username):
 
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
-def event_group(request, username, name):
+def event_group(request, name):
+    username = request.user.username
     if request.method == 'GET':
         group = UserCustom.objects.get(
             username=username).event_group.get(name=name)
@@ -41,7 +43,8 @@ def event_group(request, username, name):
 
 @api_view(['POST', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-def repeated_event(request, username, name, rep_id):
+def repeated_event(request, name, rep_id):
+    username = request.user.username
     if request.method == 'PUT':
         body = json.loads(request.body)
         UserCustom.objects.get(
@@ -74,7 +77,8 @@ def repeated_event(request, username, name, rep_id):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def group(request, username, name, rep_id):
+def group(request, name, rep_id):
+    username = request.user.username
     if request.method == 'DELETE':
         UserCustom.objects.get(
             username=username).event_group.get(
@@ -84,7 +88,8 @@ def group(request, username, name, rep_id):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def get_event_group_names(request, username):
+def get_event_group_names(request):
+    username = request.user.username
     if request.method == 'GET':
         user = UserCustom.objects.get(username=username)
         serialized_groups = serializers.serialize(
@@ -110,7 +115,8 @@ def event_view(request, event_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def repeated(request, username, name):
+def repeated(request, name):
+    username = request.user.username
     if request.method == 'POST':
         body = json.loads(request.body)
         group = UserCustom.objects.get(
