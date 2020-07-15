@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+# SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = "2^5vymbbt6tkb2)f_x6y5-tr=sm!e6s8f@$%x46fm)$h#eci5^"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,13 +84,21 @@ WSGI_APPLICATION = 'scheduler.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.environ['DB_NAME'],
+    #     'USER': os.environ['DB_USER'],
+    #     'PASSWORD': os.environ['DB_PASSWORD'],
+    #     'HOST': os.environ['DB_HOST'],
+    #     'PORT': os.environ['DB_PORT'],
+    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PASSWORD'],
-        'HOST': os.environ['DB_HOST'],
-        'PORT': os.environ['DB_PORT'],
+        'NAME': "usersdb",
+        'USER': "audrey",
+        'PASSWORD': "audrey",
+        'HOST': "localhost",
+        'PORT': "5432",
     }
 }
 
@@ -168,5 +177,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ['EMAIL']
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
+# EMAIL_HOST_USER = os.environ['EMAIL']
+# EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
+EMAIL_HOST_USER = "nus.scheduler@gmail.com"
+EMAIL_HOST_PASSWORD = "Orbital2020"
