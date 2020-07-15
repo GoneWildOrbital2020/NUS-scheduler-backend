@@ -50,6 +50,7 @@ class UserCustom(AbstractBaseUser, PermissionsMixin):
     total_notes = models.IntegerField(default=0)
     total_files = models.IntegerField(default=0)
     logout_time = models.DateTimeField(blank=True, null=True)
+    authenticated = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
