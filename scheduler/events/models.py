@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from calendars.models import Month, Day
 from users.models import UserCustom
@@ -16,17 +17,17 @@ class EventGroup(models.Model):
 
 
 class RepeatedEvent(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.TextField()
     group = models.ForeignKey(
         EventGroup, on_delete=models.CASCADE, null=True, blank=True, related_name='repeated')
 
 
 class Event(models.Model):
     index = models.IntegerField()
-    title = models.CharField(max_length=30)
+    title = models.TextField()
     description = models.TextField()
-    start = models.TextField()
-    end = models.TextField()
+    start = models.DateTimeField(null=True, blank=True)
+    end = models.DateTimeField(null=True, blank=True)
     location = models.TextField()
     color = models.TextField(default="#6B7F82")
     day = models.ForeignKey(
@@ -66,7 +67,7 @@ class Event(models.Model):
                 month_name=Month.get_month_code(int(month)-1))
             day_obj, _ = month_obj.day_set.get_or_create(index=int(day))
             Event.objects.create(index=events_count, title=data_dict["SUMMARY"], description=data_dict["DESCRIPTION"],
-                                 start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location="Exam Hall", day=day_obj, group=group, repeated_event=repeated_event)
+                                 start=datetime(year=2020, month=1, day=1, hour=int(data_dict["DTSTART"][9:11]), minute=int(data_dict["DTSTART"][11:13])), end=datetime(year=2020, month=1, day=1, hour=int(data_dict["DTEND"][9:11]), minute=int(data_dict["DTEND"][11:13])), location="Exam Hall", day=day_obj, group=group, repeated_event=repeated_event)
             return
         count = 0
         rules = data_dict["RRULE"].split(';')
@@ -77,7 +78,7 @@ class Event(models.Model):
             day_obj, _ = month_obj.day_set.get_or_create(index=int(day))
             if (year + month + day) not in dates:
                 Event.objects.create(index=events_count, title=data_dict["SUMMARY"], description=data_dict["DESCRIPTION"],
-                                     start=data_dict["DTSTART"][9:13], end=data_dict["DTEND"][9:13], location=data_dict["LOCATION"], day=day_obj, group=group, repeated_event=repeated_event)
+                                     start=datetime(year=2020, month=1, day=1, hour=int(data_dict["DTSTART"][9:11]), minute=int(data_dict["DTSTART"][11:13])), end=datetime(year=2020, month=1, day=1, hour=int(data_dict["DTEND"][9:11]), minute=int(data_dict["DTEND"][11:13])), location=data_dict["LOCATION"], day=day_obj, group=group, repeated_event=repeated_event)
                 events_count = events_count + 1
 
             next_week = month_obj.get_next_week(day)
