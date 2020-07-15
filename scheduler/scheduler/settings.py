@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import datetime
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -172,6 +173,9 @@ AUTH_USER_MODEL = "users.UserCustom"
 
 SESSION_COOKIE_SECURE = False
 
+<< << << < HEAD
+django_heroku.settings(locals())
+== == == =
 # Email settings
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -182,3 +186,4 @@ EMAIL_PORT = 587
 # EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
 EMAIL_HOST_USER = "nus.scheduler@gmail.com"
 EMAIL_HOST_PASSWORD = "Orbital2020"
+>>>>>> > cf7cf10d7dcf12519a27d8f013d0d51b11e13722
