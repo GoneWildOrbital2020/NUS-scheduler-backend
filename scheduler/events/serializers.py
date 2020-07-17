@@ -12,7 +12,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('index', 'title', 'description',
-                  'start', 'end', 'location', 'color', 'day', 'month', 'year')
+                  'start', 'end', 'location', 'color', 'day', 'month', 'year', 'id')
         depth = 3
 
 

@@ -28,11 +28,9 @@ def tasks(request, username, name):
 @ permission_classes([IsAuthenticated])
 def task(request, username, name, id):
     if request.method == 'DELETE':
-        UserCustom.objects.get(username=username).event_group.all().get(
-            name=name).task_set.all().get(pk=id).delete()
+        Task.objects.get(pk=id).delete()
         return HttpResponse(status=200)
     elif request.method == 'PUT':
         body = json.loads(request.body)
-        UserCustom.objects.get(username=username).event_group.all().get(
-            name=name).task_set.all().filter(pk=id).update(**body['data'])
+        Task.objects.filter(pk=id).update(**body['data'])
         return HttpResponse(status=200)
