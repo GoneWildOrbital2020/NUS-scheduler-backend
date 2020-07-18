@@ -173,9 +173,9 @@ AUTH_USER_MODEL = "users.UserCustom"
 
 SESSION_COOKIE_SECURE = False
 
-<< << << < HEAD
-django_heroku.settings(locals())
-== == == =
+# << << << < HEAD
+# django_heroku.settings(locals())
+# == == == =
 # Email settings
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -186,4 +186,3 @@ EMAIL_PORT = 587
 # EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
 EMAIL_HOST_USER = "nus.scheduler@gmail.com"
 EMAIL_HOST_PASSWORD = "Orbital2020"
->>>>>> > cf7cf10d7dcf12519a27d8f013d0d51b11e13722
