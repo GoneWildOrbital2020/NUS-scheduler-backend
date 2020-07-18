@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -13,27 +14,26 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import UserCustom
 from scheduler.settings import SECRET_KEY
 import jwt
+import json
 from rest_framework_jwt.utils import jwt_payload_handler
+from django.core import serializers
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser, ])
 def changeUserCredentials(request):
-    email = request.data['email']
-    username = request.data['username']
-    password = request.data['password']
-    avatar = request.data['avatar']
+    data = request.data
+    email = data['email']
+    print(data)
     user = UserCustom.objects.get(email=email)
-    if avatar != '':
-        user.avatar = avatar
-    if password != '':
-        user.password = password
-    user.username = username
-    user.save()
-    response = {}
-    response['username'] = username
-    response['avatar'] = user.avatar.url
-    return Response(response, status=status.HTTP_200_OK) 
+    if 'avatar' in data:
+        user.avatar = data['avatar']
+        data.pop('avatar')
+        user.save()
+    print(data)
+    UserCustom.objects.filter(email=email).update(**json.loads(json.dumps(data)))
+    response = serializers.serialize('json', UserCustom.objects.filter(email=email), fields=('username', 'avatar'))
+    return HttpResponse(response, status=status.HTTP_200_OK) 
 
 
 @api_view(['POST'])

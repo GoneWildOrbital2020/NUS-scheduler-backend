@@ -11,7 +11,8 @@ from .models import Task
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def tasks(request, username, name):
+def tasks(request, name):
+    username = request.user.username
     if request.method == 'GET':
         data = UserCustom.objects.get(
             username=username).event_group.all().get(name=name).task_set.all()
@@ -26,7 +27,8 @@ def tasks(request, username, name):
 
 @ api_view(['PUT', 'DELETE'])
 @ permission_classes([IsAuthenticated])
-def task(request, username, name, id):
+def task(request, name, id):
+    username = request.user.username
     if request.method == 'DELETE':
         Task.objects.get(pk=id).delete()
         return HttpResponse(status=200)
