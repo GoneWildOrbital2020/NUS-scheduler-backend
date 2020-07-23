@@ -124,9 +124,11 @@ def delete_files(request, name):
     group_obj = user_obj.event_group.get(name=name)
     if group_obj.files.filter(identifier=request.data['identifier']).exists():
         file = group_obj.files.get(identifier=request.data['identifier'])
+        file.file.delete(save=False)
         file.delete()
     if group_obj.images.filter(identifier=request.data['identifier']).exists():
         image = group_obj.images.get(identifier=request.data['identifier'])
+        image.image.delete(save=False)
         image.delete()
     return Response(status=status.HTTP_200_OK)
 
