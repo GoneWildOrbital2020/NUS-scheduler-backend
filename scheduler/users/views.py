@@ -92,7 +92,7 @@ class CreateUserAPIView(APIView):
             instance = serializer.save()
             payload = jwt_payload_handler(instance)
             token = jwt.encode(payload, SECRET_KEY)
-            link = 'http://localhost:3000/activate/' + email + '/' + token.decode('utf8')
+            link = 'https://nus-scheduler.netlify.app/activate/' + email + '/' + token.decode('utf8')
             message = message + '\r\n' + link
             send_mail(subject, message, email_from, recipient_list, fail_silently=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -131,7 +131,7 @@ def request_remember(request):
     message = 'Please click the link below to reset your password.'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email, ]
-    link = 'http://localhost:3000/reset/' + email + '/' + token.decode('utf8')
+    link = 'https://nus-scheduler.netlify.app/reset/' + email + '/' + token.decode('utf8')
     message = message + '\r\n' + link
     send_mail(subject, message, email_from, recipient_list, fail_silently=False)
     return Response(status=status.HTTP_200_OK)
