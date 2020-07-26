@@ -43,21 +43,14 @@ def day_events(request, year, month, day):
         day_obj.event_set.all().delete()
 
         for event in events:
-            print(event)
-            if hasattr(event, 'repeated_event'):
+            if 'repeated_event' in event:
+                print("here1")
                 rep_obj = RepeatedEvent.objects.get(pk=event['repeated_event'])
                 event['repeated_event'] = rep_obj
-            if hasattr(event, 'group'):
+            if 'group' in event:
+                print("here2")
                 group_obj = EventGroup.objects.get(pk=event['group'])
                 event['group'] = group_obj
-            if hasattr(event, 'start'):
-                start = datetime.fromisoformat(
-                    event['start'].replace('Z', '+08:00'))
-                event['start'] = start
-            if hasattr(event, 'end'):
-                end = datetime.fromisoformat(
-                    event['end'].replace('Z', '+08:00'))
-                event['end'] = end
 
             event['day'] = day_obj
             Event.objects.create(**event)
