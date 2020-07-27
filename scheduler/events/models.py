@@ -42,15 +42,25 @@ class Event(models.Model):
 
     @staticmethod
     def parse(data, user):
+        pos_key = ["BEGIN", "VERSION", "PROID", "UID", "SEQUENCE", "DTSTAMP", "DTSTART",
+            "DTEND", "RRULE", "EXDATE", "SUMMARY", "LOCATION", "DESCRIPTION", "END"]
         splitted = data.split('\r\n')[:-1]
         data_dict = {}
         dates = []
+        last = ""
         for item in splitted:
-            [key, value] = item.split(':')
-            if key == "EXDATE":
-                dates.append(value[:8])
+            if item.find(':') == -1:
+                data_dict[last] = data_dict[last] + item
             else:
-                data_dict[key] = value
+                [key, value] = item.split(':', 1)
+                if key not in pos_key:
+                    data_dict[last] = data_dict[last] + item
+                elif key == "EXDATE":
+                    dates.append(value[:8])
+                else:
+                    data_dict[key] = value
+                    last = key
+
         group, _ = user.event_group.get_or_create(
             name=data_dict["SUMMARY"].split(" ", 1)[0])
         repeated_event, _ = group.repeated.get_or_create(
